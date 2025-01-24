@@ -17,9 +17,10 @@
     <DebugType>None</DebugType>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="GLOKON.Baiters.Core" Version="1.4.18">
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
+    <PackageReference Include="GLOKON.Baiters.Core" Version="1.4.18" PrivateAssets="all" IncludeAssets="none" GeneratePathProperty="true" />
+    <Reference Include="$(PkgGLOKON_Baiters_Core)/lib/net8.0/GLOKON.Baiters.Core.dll" SpecificVersion="false">
+      <Private>false</Private>
+    </Reference>
   </ItemGroup>
 
 </Project>
