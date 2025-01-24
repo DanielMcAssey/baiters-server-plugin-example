@@ -1,0 +1,59 @@
+name: Build and Release
+on:
+  push:
+    branches:
+      - main
+      - beta
+      - alpha
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+permissions:
+  id-token: write
+  issues: write
+  contents: write
+  pull-requests: write
+jobs:
+  build_and_release:
+    runs-on: ubuntu-latest
+    env:
+      PLUGIN_NAME: "MyExamplePluginForBaiters"
+      PLUGIN_PROJECT: "src/MyExamplePluginForBaiters.csproj"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: 'npm'
+
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Release
+        id: release-next-version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
+
+      - name: Build Plugin
+        run: dotnet publish ${{ env.PLUGIN_PROJECT }} -p:AssemblyVersion="${{ steps.release-next-version.outputs.new-release-version }}.0" --configuration Release --output ./dist/
+
+      - uses: vimtor/action-zip@v1.2
+        with:
+          files: dist/
+          dest: ${{ env.PLUGIN_NAME }}-${{ steps.release-next-version.outputs.new-release-version }}.zip
+
+      - name: (GitHub) Upload Asset
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload ${{ steps.release-next-version.outputs.new-release-git-tag }} ${{ github.workspace }}/${{ env.PLUGIN_NAME }}-${{ steps.release-next-version.outputs.new-release-version }}.zip

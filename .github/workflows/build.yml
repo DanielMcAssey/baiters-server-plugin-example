@@ -1,0 +1,28 @@
+name: Build and Package
+on:
+  push:
+    branches-ignore:
+      - main
+      - alpha
+      - beta
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      PLUGIN_PROJECT: "src/MyExamplePluginForBaiters.csproj"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Build Plugin
+        run: dotnet build ${{ env.PLUGIN_PROJECT }} -p:AssemblyVersion="0.0.0.0" --configuration Release
