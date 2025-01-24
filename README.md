@@ -1,5 +1,5 @@
 # Baiters Plugin Example
-[![MyExamplePluginForBaiters](https://github.com/DanielMcAssey/baiters-server/actions/workflows/release.yml/badge.svg)](https://github.com/DanielMcAssey/baiters-server/actions/workflows/release.yml)
+[![MyExamplePluginForBaiters](https://github.com/DanielMcAssey/baiters-server-plugin-example/actions/workflows/release.yml/badge.svg)](https://github.com/DanielMcAssey/baiters-server-plugin-example/actions/workflows/release.yml)
 
 An example plugin for WebFishing Baiters Server, it shows you how to create it, its ready to go for publishing changes automatically to GitHub with GitHub Actions, and supports main, beta and alpha branches and releases
 
